@@ -1,2 +1,1 @@
-$ cat Procfile
-web: node index
+web: node index.js
