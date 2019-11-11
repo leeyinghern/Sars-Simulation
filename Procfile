@@ -1,1 +1,2 @@
-node index
+$ cat Procfile
+web: node index
