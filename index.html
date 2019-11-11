@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<script src="./index.js"></script>
+	<script src="/d3.v5.js"></script>
+	<script src="./../d3-timer.v1.min.js"></script>
+
+	<!-- <script src="https://d3js.org/d3.v5.js"></script> -->
+	<script src="thirdparty/jquery.min.js"></script>
+	<script src="thirdparty/jquery.easyui.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=0.8, user-scalable=no">
+	<meta charset="utf-8">
+	<title>SARS Simulation Project</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="external-css.css">
+	<script src="https://use.fontawesome.com/2327f1ec26.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<link rel="shortcut icon" href="">
+  <script type="text/javascript">
+		window.onload = function(){
+			let country_list = []
+			d3.csv('/data_1.csv').then(data =>{
+
+				for (i=0;i<data.length;i++){
+					if(country_list.includes(data[i].Country)){
+						continue
+					}else{
+						country_list.push(data[i].Country)
+					}
+				}
+				for (var i=0; i<country_list.length; i++){
+					$('#countries_dropdown').append('<option>'+country_list[i]+'</option>')
+				};
+			})
+		};
+  </script>
+
+
+	<style media="screen">
+	.slider {
+	  -webkit-appearance: none;
+	  width: 100%;
+	  height: 15px;
+	  border-radius: 5px;
+	  background: #d3d3d3;
+	  outline: none;
+	  opacity: 0.7;
+	  -webkit-transition: .2s;
+	  transition: opacity .2s;
+	}
+
+	.slider::-webkit-slider-thumb {
+	  -webkit-appearance: none;
+	  appearance: none;
+	  width: 25px;
+	  height: 25px;
+	  border-radius: 50%;
+	  background: #4CAF50;
+	  cursor: pointer;
+	}
+
+	.slider::-moz-range-thumb {
+	  width: 25px;
+	  height: 25px;
+	  border-radius: 50%;
+	  background: #4CAF50;
+	  cursor: pointer;
+	}
+	</style>
+</head>
+<body >
+	<div class = 'row' id = 'introw_0' style='margin-top:0.5em'>
+		<div class = "col-3">
+
+			<h1 style="text-decoration:underline">MODEL PARAMETERS</h1>
+			<table id='input_table'>
+				<tr>
+					<td><strong>Input Number of Days: </strong></td><td><input type="text" id = "days" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Initial Infected Count:</strong></td><td><input type="text"  id = "initial_infected" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Initial Recovered Count:</strong> </td><td><input type="text" id = "initial_recovered" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Initial Death Count:</strong> </td><td><input type="text" id = "initial_death" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Case Fatality Ratio:</strong> </td><td><input type="text" id = "cfr" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+
+				<tr>
+					<td><strong>Initial Exposed Count:</strong></td><td><input type="text"  id = "initial_exposed" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Start Date:</strong> </td><td><input type="text" id = "datevalue" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Beta: </strong></td><td><input type="text"  id = "beta" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Sigma:</strong> </td><td><input type="text"  id = "sigma" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Gamma:</strong> </td><td><input type="text" id = "gamma" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Epsilon:</strong> </td><td><input type="text" id = "epsilon" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+				<tr>
+					<td><strong>Initial Population: </strong></td><td><input type="text" id = "initial_total" class="input-group-text ml-3 mr-2 w-50"/></td>
+				</tr>
+			</table>
+			<hr style = 'height:0.2em;border:none;color:#333;background-color:#333'>
+			<table cellpadding=3rem style=' margin-right:2em;margin-left:2em;margin-top:1em'>
+				<th id = "top1name" colspan="2"><h2><strong style='color:Navy; text-decoration:underline'>Initial Parameters</strong></h2></th>
+				<tr><td><strong style ='font-size:1.2em'>Total Days</strong></td><td id = "no_days"><h4>&nbsp;</h4></td></tr>
+				<tr><td><strong style ='font-size:1.2em'>No. Initial Infected</strong></td><td id = "no_inf_val"><h4>&nbsp;</h4></td></tr>
+				<tr><td><strong style ='font-size:1.2em'>No. Initial Recovered</strong></td><td id = "no_rec_val"><h4>&nbsp;</h4></td></tr>
+				<tr><td><strong style ='font-size:1.2em'>No. Initial Deaths</strong></td><td id = "no_deaths"><h4>&nbsp;</h4></td></tr>
+				<tr><td><strong style ='font-size:1.2em'>Case Fatality Ratio</strong></td><td id = "cfr_out"><h4>&nbsp;</h4></td></tr>
+				<tr><td><strong style ='font-size:1.2em'>Start Date</strong></td><td id = "first_date"><h4>&nbsp;</h4></td></tr>
+			</table>
+		<div class="vr">&nbsp;</div>
+
+		</div>
+		<div class="col-9">
+				 <div class="graph1">
+
+					 <div class= 'input-group' style='margin-left:5em'>
+						 <h4><strong>Select Country:</h4></strong> <input type="text" list="countries_dropdown" placeholder="Enter Country Here" id = "countries_value" class="input-group-text ml-3 mr-2 w-50"/>
+						 <datalist id="countries_dropdown">
+						 </datalist><span class="input-group-btn"><button type="button" class="btn btn-dark btn-lg" onclick="lineplot();animatedline()"><i class="fa fa-search"></i></button></span>
+
+					 </div>
+					 <br>
+					 <div class= 'input-group' style='margin-left:5em'>
+						 <h4><strong>Select Population:</h4></strong> <input type="text" list="population_dropdown" placeholder="Enter Population Here" id = "population_value" class="input-group-text ml-3 mr-2 w-50"/>
+						 <datalist id="population_dropdown">
+							 <option>Infected</option>
+							 <option>Deaths</option>
+							 <option>Recovered</option>
+						 </datalist>
+
+					 </div>
+					 <svg width = '1000' height ='500' id='linechart'style="margin-top:3em;margin-left:2em"></svg>
+						<script src="./index.js"></script>
+					 	<script src="/d3.v5.js"></script>
+						 <div class="row" style='margin-top:3em'>
+						 <table  cellpadding=3rem style=' margin-right:2em;margin-left:10em;margin-top:0.2em'>
+							 <th id = "top1name" colspan="2"><h2><strong style='color:Navy; text-decoration:underline'>Descriptive Statistics</strong></h2></th>
+							 <tr><td><strong style ='font-size:1.2em'>Mean Squared Error</strong></td><td id = "mse"><h4>&nbsp;</h4></td></tr>
+							 <tr><td><strong style ='font-size:1.2em'>RMSE</strong></td><td id = "rmse"><h4>&nbsp;</h4></td></tr>
+						 </table>
+						 </div>
+					</div>
+			</div>
+
+	</div>
+
+	<!-- NEW ROW BEGINS HERE -->
+	<div class="row">
+		<div class="col-3">
+
+		</div>
+		<div class="col-9">
+
+
+		</div>
+	</div>
+	<div class="row">
+		<div id="wrapper" class="wrapper">
+		</div>
+
+		<script src="./../../../../d3.v5.js"></script>
+		<script src="./../d3-timer.v1.min.js"></script>
+		<script src="./index.js"></script>
+		<script type="text/javascript">
+			animated()
+
+		</script>
+		<div class = 'col-6'>
+
+	<svg width ='1200' height='600' id='barchart'>
+	</svg>
+
+	<script type="text/javascript">
+
+		// Select the SVG tag by id
+		const svg = d3.select('#barchart');
+
+		// Define width and height of SVG (pulled from SVG tag)
+		const width = +svg.attr('width');
+		const height = +svg.attr('height');
+
+
+		// Define the plotting function
+		const render = data => {
+		  const xvalue = d => d.cases;
+		  const yvalue = d => d.country;
+		  const margin = {top:30,bottom:30, right:20,left:300};
+		  const innerwidth = parseFloat(width - margin.left - margin.right);
+		  const innerheight = parseFloat(height - margin.top - margin.bottom);
+
+		  // Define vertical and horizontal scale
+		  const xscale = d3.scaleLinear()
+		    .domain([0, d3.max(data,xvalue)])
+		    .range([0,innerwidth]);
+
+		  const yscale = d3.scaleBand()
+		    .domain(data.map(yvalue))
+		    .range([0,innerheight])
+		    .padding(0.2);
+
+		  const yaxis = d3.axisLeft(yscale);
+		  const xaxis = d3.axisBottom(xscale)
+		    .tickSize(-innerheight+10);
+
+		  const g = svg.append('g')
+		    .attr('transform',`translate(${margin.left},${margin.top})`);
+
+		  g.append('g').call(yaxis)
+		    .selectAll('.domain,.tick line')
+		    .remove();
+
+
+		  g.append('g').call(xaxis)
+		    .attr('transform',`translate(0,${innerheight})`);  // do this to move the axis to the bottom. Translate right by 0 units. Translate down by innerheigh units
+
+		  g.selectAll('rect')
+		    .data(data)
+		    .enter()
+		    .append('rect')
+		    .attr('y',d=>yscale(yvalue(d)))
+		    .attr('width',d=>xscale(xvalue(d)))
+		    .attr('height',yscale.bandwidth())
+		    .attr( "fill", "steelblue");
+
+		  // Append graph title
+		  g.append('text').text("Total Cases per Country").attr('y',1).attr('x',300).attr('margin',3)
+
+		};
+
+
+		// CALL THE CSV FUNCTION LAST. DO DATA PROCESSING HERE
+		d3.csv('/data_1.csv').then(data =>{
+		    data.forEach( d=>{
+		      d.Country=d.Country;
+		      d.Deaths = +d.Deaths;
+		      d.Cumulative_Cases= +d.Cumulative_Cases;
+
+		    });
+		    let sg = data.filter(entry => entry.Country ==='Singapore');
+		    let country_list = [];
+		    for (i=0;i<data.length;i++){
+		      if(country_list.includes(data[i].Country)){
+		        continue
+		      }else{
+		        country_list.push(data[i].Country)
+		      }
+		    }
+		    // console.log(country_list)
+
+		    let tent = [];
+		    for (i=0; i<country_list.length;i++){
+		      let array = data.filter(entry => entry.Country ===country_list[i]);
+		      let count = []
+
+		      for (a=0; a<array.length;a++){
+		        let entry = array[a];
+		        let cases = entry.Cumulative_Cases;
+		        count.push(cases);
+		      }
+		      let max = d3.max(count);
+		      tent.push(max);
+		    }let cleaned = [];
+		    for (i=0;i<country_list.length;i++){
+		      let item = {"country":country_list[i],"cases":tent[i]}
+		      cleaned.push(item);
+		    };
+		    cleaned.splice(7,1);
+		    let to_remove = [];
+		    for (i =0; i<cleaned.length;i++){
+		      let value = cleaned[i].cases;
+
+		      if (value < 200){
+		        to_remove.push(i);
+		      }
+		    }
+		    for (var i = to_remove.length -1; i >= 0; i--)
+		       cleaned.splice(to_remove[i],1);
+		    //
+		    // console.log(cleaned);
+		    render(cleaned);
+
+		  });
+
+		</script>
+		</div>
+	</div>
+	<div class="row">
+
+
+
+	</div>
+
+
+
+</body>
+</html>

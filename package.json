@@ -1,0 +1,23 @@
+{
+  "name": "simulation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "d3": "^5.12.0",
+    "d3-geo-projection": "^2.7.0",
+    "express": "^4.17.1",
+    "jsdom": "^15.2.0",
+    "moment": "^2.24.0",
+    "node-fetch": "^2.6.0",
+    "node-fetch-polyfill": "^2.0.6",
+    "node.js": "0.0.0",
+    "require": "^2.4.20"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,49 @@
+[{
+    "sex": "female",
+    "age": "old",
+    "Susceptible":70.0,
+    "Exposed":5.0,
+    "Infected":10.0,
+    "Recovered":10.0,
+    "Death":5.0
+},{
+    "sex": "male",
+    "age": "old",
+    "Susceptible":70.0,
+    "Exposed":5.0,
+    "Infected":10.0,
+    "Recovered":10.0,
+    "Death":5.0
+},{
+  "sex": "male",
+  "age": "middle",
+  "Susceptible":60.0,
+  "Exposed":5.0,
+  "Infected":30.0,
+  "Recovered":1.0,
+  "Death":4.0
+},{
+  "sex": "female",
+  "age": "middle",
+  "Susceptible":60.0,
+  "Exposed":5.0,
+  "Infected":30.0,
+  "Recovered":1.0,
+  "Death":4.0
+},{
+    "sex": "male",
+    "age": "young",
+    "Susceptible":60.0,
+    "Exposed":5.0,
+    "Infected":30.0,
+    "Recovered":1.0,
+    "Death":4.0
+},{
+    "sex": "female",
+    "age": "young",
+    "Susceptible":60.0,
+    "Exposed":5.0,
+    "Infected":30.0,
+    "Recovered":1.0,
+    "Death":4.0
+}]
